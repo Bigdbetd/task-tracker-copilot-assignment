@@ -7,10 +7,10 @@ A beginner-friendly console task tracker built with Python using only the standa
 - **Numbered Menu Interface**: Easy-to-navigate console menu with 5 options
 - **Add Tasks**: Create new tasks with descriptions
 - **List Tasks**: View all tasks with completion status
-- **Mark Complete**: Toggle task completion status with visual indicators
+- **Mark Complete**: Mark an incomplete task as complete; this action does not toggle it back to incomplete
 - **Delete Tasks**: Remove completed or unwanted tasks
 - **Persistent Storage**: All tasks saved to `tasks.json` and restored on startup
-- **Error Handling**: Gracefully handles invalid input, malformed JSON, and EOF/interrupt signals
+- **Error Handling**: Gracefully handles invalid input, malformed JSON, and EOF/interrupt signals at the main menu prompt
 - **No Dependencies**: Uses only Python standard library (`json`, `os`, `datetime`)
 
 ## Requirements
@@ -110,6 +110,8 @@ YOUR TASKS
 ============================================================
 ```
 
+Marking a task complete only changes it from incomplete to complete. Running the action again reports that the task is already complete; it does not change the task back to incomplete.
+
 **Deleting a Task:**
 ```
 Select an option (1-5): 4
@@ -143,7 +145,7 @@ Goodbye! 👋
 
 ## Data Persistence
 
-All tasks are automatically saved to `tasks.json` after each operation (add, complete, delete). This file is created in the same directory as `app.py`.
+All tasks are automatically saved to `tasks.json` after each operation (add, complete, delete). Because the application uses the relative path `tasks.json`, the file is created in the process's current working directory—the directory from which `python app.py` is run—not necessarily the directory containing `app.py`.
 
 **Example `tasks.json` structure:**
 ```json
@@ -177,16 +179,20 @@ The app handles invalid input gracefully:
 - **Non-numeric task ID** (e.g., `foo`): Shows a validation error and returns to the menu
 - **Nonexistent task ID** (e.g., task 99 doesn't exist): Displays a "not found" error
 - **Malformed JSON**: App warns you and starts with a fresh task list
-- **Ctrl+C** or **Ctrl+D** (EOF): App exits gracefully with a goodbye message
+- **Ctrl+C** or **Ctrl+D** (EOF): When entered at the main menu prompt, the app exits gracefully with a goodbye message. These signals are not caught around the add, complete, or delete input prompts.
 
 ## Project Structure
 
 ```
 task-tracker-copilot-assignment/
 ├── app.py           # Main application
-├── tasks.json       # Auto-created persistent task storage
-└── README.md        # This file
+├── tasks.json       # Persistent task storage, created in the current working directory
+├── README.md        # This file
+├── REFLECTION.md    # Project reflection
+└── evidence/        # Supporting project evidence
 ```
+
+`REFLECTION.md` and `evidence/` are included in the intended project structure for the project materials you add.
 
 ## License
 
