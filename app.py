@@ -37,6 +37,15 @@ def save_tasks(tasks):
         print(f"Error saving tasks: {e}")
 
 
+def get_next_id(tasks):
+    """Calculate the next unique task ID (max existing ID + 1)."""
+    if not tasks:
+        return 1
+    
+    max_id = max(task.get("id", 0) for task in tasks)
+    return max_id + 1
+
+
 def display_menu():
     """Display the main menu options."""
     print("\n" + "=" * 40)
@@ -59,7 +68,7 @@ def add_task(tasks):
         return
     
     task = {
-        "id": len(tasks) + 1,
+        "id": get_next_id(tasks),
         "title": task_title,
         "completed": False,
         "created_at": datetime.now().isoformat()
@@ -82,7 +91,7 @@ def list_tasks(tasks):
     
     for task in tasks:
         status = "✓" if task["completed"] else " "
-        task_id = task.get("id", tasks.index(task) + 1)
+        task_id = task.get("id", 0)
         title = task.get("title", "Untitled")
         print(f"  [{status}] {task_id}. {title}")
     
@@ -156,22 +165,30 @@ def main():
     print("\n✨ Welcome to Task Tracker! ✨")
     
     while True:
-        display_menu()
-        choice = input("Select an option (1-5): ").strip()
+        try:
+            display_menu()
+            choice = input("Select an option (1-5): ").strip()
+            
+            if choice == "1":
+                add_task(tasks)
+            elif choice == "2":
+                list_tasks(tasks)
+            elif choice == "3":
+                mark_complete(tasks)
+            elif choice == "4":
+                delete_task(tasks)
+            elif choice == "5":
+                print("\nGoodbye! 👋")
+                break
+            else:
+                print("Error: Invalid option. Please enter a number between 1 and 5.")
         
-        if choice == "1":
-            add_task(tasks)
-        elif choice == "2":
-            list_tasks(tasks)
-        elif choice == "3":
-            mark_complete(tasks)
-        elif choice == "4":
-            delete_task(tasks)
-        elif choice == "5":
-            print("\nGoodbye! 👋")
+        except EOFError:
+            print("\n\nGoodbye! 👋")
             break
-        else:
-            print("Error: Invalid option. Please enter a number between 1 and 5.")
+        except KeyboardInterrupt:
+            print("\n\nGoodbye! 👋")
+            break
 
 
 if __name__ == "__main__":
